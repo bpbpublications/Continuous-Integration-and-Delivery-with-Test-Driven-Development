@@ -1,0 +1,20 @@
+pipeline {
+	agent any
+	stages {
+	     stage (‘Stage #1’) {
+		steps {
+			echo  ‘Hello world’
+			sleep 10
+			echo  ‘This is the First Stage’
+		}
+	}
+	stage (‘Stage #2’) {
+		steps {
+			echo ‘This is the Second stage’
+			}
+		}
+	stage (‘Stage #3’) {
+		steps {
+			echo ‘This is the Third Stage’
+			}
+		}

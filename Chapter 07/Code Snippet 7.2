@@ -1,0 +1,21 @@
+# use the official Node.js 14 docker image
+image: node:14
+
+pipelines:
+  branches:
+    # deploy only when pushing to the main branch
+    main:
+      - step:
+          name: deploy to prod    #Bitbucket deployment name
+          deployment: Production
+          caches:
+            # cache the Ansible installation
+            - npm
+          script:
+            # install Ansible
+            - npm install -g ansible
+            # go into the ansible directory
+            # in this same repository
+            - cd ansible
+            # perform the actual deploy
+            - ansible-playbook -i ./hosts deploy.yaml

@@ -1,0 +1,43 @@
+# Example SSH configuration in ~/.ssh/config
+Host: yourserver
+  User: root
+  Port: 22
+  HostName: yourserver.example.com
+
+
+
+# Generate SSH key pair
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+# Configure password-less access
+ssh-copy-id root@yourserver.example.com
+git clone https://github.com/example/nodejs-ansible-deploy.git
+cd nodejs-ansible-deploy
+# Update the Hhosts file with your server's information.
+[yourserver]
+yourserver ansible_ssh_host=yourserver.example.com ansible_ssh_user=root
+
+# Execute Ansible Pplaybooks to configure the server and deploy your Node.js project:
+ansible-playbook -i hosts ansible/system.yaml
+ansible-playbook -i hosts ansible/packages.yaml
+ansible-playbook -i hosts ansible/config_files.yaml
+ansible-playbook -i hosts ansible/postgresql.yaml
+ansible-playbook -i hosts ansible/deploy.yaml
+# Update your Node.js project
+# Push changes to your GIT repository.
+git push origin master
+# Run the Ansible playbook to update your Node.js project on the server.
+ansible-playbook -i hosts ansible/deploy.yaml
+#Configure Bitbucket Pipelines to use Ansible for continuous delivery.
+# bitbucket-pipelines.yml
+image: python:2.7.16
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Deploy to Production
+          caches:
+            - pip
+          script:
+            - pip install ansible==2.8.0
+            - cd ansible
+            - ansible-playbook -i ../hosts deploy.yaml
